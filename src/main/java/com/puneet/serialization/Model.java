@@ -3,6 +3,7 @@ package com.puneet.serialization;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Model implements Serializable {
@@ -10,8 +11,8 @@ public class Model implements Serializable {
     static final long serialVersionUID = 1L;
 
     private String name;
-    //private Integer age;
-    private String age;
+    private Integer age;
+    //private String age;
     private Long id;
     private Boolean isMale;
     private Gender gender;
@@ -20,7 +21,7 @@ public class Model implements Serializable {
 
     private static final ObjectStreamField[] serialPersistentFields = {
             new ObjectStreamField("name", String.class),
-            new ObjectStreamField("age", String.class),
+            new ObjectStreamField("age", Integer.class),
             new ObjectStreamField("id", Long.class),
             new ObjectStreamField("isMale", Boolean.class),
             new ObjectStreamField("gender", Gender.class),
@@ -28,7 +29,7 @@ public class Model implements Serializable {
             new ObjectStreamField("customFile", CustomFile.class)
     };
 
-    public Model(String name, String age, Long id, Boolean isMale, Gender gender, Map<String, String> data, CustomFile customFile) {
+    public Model(String name, Integer age, Long id, Boolean isMale, Gender gender, Map<String, String> data, CustomFile customFile) {
         this.name = name;
         this.age = age;
         this.id = id;
@@ -46,11 +47,11 @@ public class Model implements Serializable {
         this.name = name;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
@@ -128,11 +129,12 @@ public class Model implements Serializable {
         ObjectInputStream.GetField getField = objectInputStream.readFields();
         this.name = (String) getField.get("name", null);
         try{
-            this.age = (String)getField.get("age", null);
+            this.age = (Integer) getField.get("age", null);
         }catch(ClassCastException e) {
+            e.printStackTrace();
             System.out.println("Error in casting age");
-            //this.age = Integer.toString((Integer) getField.get("age", null));
-            this.age = null;
+            this.age = Integer.parseInt((String) getField.get("age", null));
+            //this.age = null;
         }
         this.id = (Long) getField.get("id", null);
         this.isMale = (Boolean) getField.get("isMale", null);

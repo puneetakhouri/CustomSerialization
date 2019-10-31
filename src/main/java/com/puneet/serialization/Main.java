@@ -2,14 +2,16 @@ package com.puneet.serialization;
 
 import java.beans.SimpleBeanInfo;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-        performWrite(true);
-        readModel(true);
+        boolean useSimple = false;
+        performWrite(useSimple);
+        //readModel(useSimple);
     }
 
     private static void performWrite(boolean createSimple) {
@@ -17,6 +19,19 @@ public class Main {
         final Object model = createModel(createSimple);
         System.out.println("---model created = "+ model.toString());
         writeModel(model);
+        printModel(model);
+    }
+
+    private static void printModel(Object model) {
+            try(final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)){
+
+                objectOutputStream.writeObject(model);
+                System.out.println("--------as string is " + new String(byteArrayOutputStream.toByteArray(), Charset.defaultCharset()));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     private static void readModel(boolean readSimple) {
@@ -65,7 +80,8 @@ public class Main {
 
             final CustomFile customFile = new CustomFile("value1", "value2");
 
-            return new Model("modeltest", "31", 3L, true, Gender.MALE, data, customFile);
+            return new Model("modeltest", 31, 3L, true, Gender.MALE, data, customFile);
+            //return null;
         }
         return new SimpleModel("puneet", 2);
         //return new SimpleModel("puneet");
